@@ -15,7 +15,7 @@ namespace TextToSpeech.AudioProcess
 {
     public static class Ffmpeg
     {
-        public static async Task<List<SegmentModel>> CutAzureExtra800(List<SegmentModel> segments)
+        public static async Task<List<SegmentModel>> CutAzureExtra350(List<SegmentModel> segments)
         {
             string tempPath = "";
             await Parallel.ForEachAsync(segments, new ParallelOptions { MaxDegreeOfParallelism = 6 }, async (segment, token) =>

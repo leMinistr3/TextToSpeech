@@ -46,7 +46,7 @@ namespace TextToSpeech
 
             List<SegmentModel> segments = await vttToSpeech.VttFilePathToSegmentListAsync(AppConfig.VttFilePath, AppConfig.WriteOnDisk);
 
-            segments = await Ffmpeg.CutAzureExtra800(segments);
+            segments = await Ffmpeg.CutAzureExtra350(segments);
             
             Console.ReadLine();
         }

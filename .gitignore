@@ -1,0 +1,10 @@
+
+*.vsidx
+
+*.pdb
+
+TextToSpeech/obj/Debug/net8.0/
+
+TextToSpeech/bin/Debug/net8.0/
+
+.vs/TextToSpeech/v17/

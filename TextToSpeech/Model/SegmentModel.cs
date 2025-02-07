@@ -11,7 +11,7 @@ namespace TextToSpeech.Model
     public class SegmentModel
     {
         public int order { get; set; }
-        public string? wavPath { get; set; }
+        public string wavPath { get; set; }
         public byte[] audioBytes { get; set; }
         public SubtitleItem subPath { get; set; }
         public TimeSpan audioDuration { get; set; }
@@ -22,6 +22,7 @@ namespace TextToSpeech.Model
             subPath = subtitleItem;
             audioBytes = audiobytes;
             audioDuration = duration;
+            wavPath = string.Empty;
         }
     }
 }
