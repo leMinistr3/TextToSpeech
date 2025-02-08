@@ -6,6 +6,7 @@ using System.Diagnostics;
 using TextToSpeech.AzureSynthesizer;
 using TextToSpeech.AudioProcess;
 using TextToSpeech.Model;
+using WaveSplitter.Wave;
 
 namespace TextToSpeech
 {
@@ -46,7 +47,13 @@ namespace TextToSpeech
 
             List<SegmentModel> segments = await vttToSpeech.VttFilePathToSegmentListAsync(AppConfig.VttFilePath, AppConfig.WriteOnDisk);
 
+            WaveParser waveParser = new WaveParser(segments.First().audioBytes);
+
+            File.WriteAllBytes("BIgTIME.wav", waveParser.AppendSilence(-0.35, WaveAppend.AtTheBeginning));
+
             segments = await Ffmpeg.CutAzureExtra350(segments);
+
+
             
             Console.ReadLine();
         }

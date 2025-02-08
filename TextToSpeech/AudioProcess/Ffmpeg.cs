@@ -1,15 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
-using TestConsole.AudioProcess.Wave;
+﻿using System.Diagnostics;
 using TextToSpeech.Model;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using WaveSplitter.Wave;
 
 namespace TextToSpeech.AudioProcess
 {
@@ -47,7 +38,8 @@ namespace TextToSpeech.AudioProcess
                 Stream baseStream = process.StandardOutput.BaseStream;
 
                 WaveParser wave = new WaveParser(baseStream);
-                segment = wave.UpdateSegment(segment);
+                segment.audioDuration = wave.totalTime;
+                segment.audioBytes = wave.audioBytes;
 
                 process.WaitForExit();
 

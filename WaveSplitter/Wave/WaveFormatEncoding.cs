@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestConsole.AudioProcess.Wave
+namespace WaveSplitter.Wave
 {
     /// <summary>
     /// Summary description for WaveFormatEncoding.

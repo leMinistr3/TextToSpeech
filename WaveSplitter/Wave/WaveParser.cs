@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using TextToSpeech.Model;
+﻿using System.Timers;
+using WaveSplitter.Extention;
 
-namespace TestConsole.AudioProcess.Wave
+namespace WaveSplitter.Wave
 {
     public class WaveParser
     {
@@ -29,13 +29,6 @@ namespace TestConsole.AudioProcess.Wave
 
         public WaveParser(byte[] audioBytes, bool automaticRepair = true) : this(new MemoryStream(audioBytes), automaticRepair) { }
         public WaveParser(Stream stream, bool automaticRepair = true) : this(streamToMemoryStream(stream), automaticRepair) { }
-
-        private static MemoryStream streamToMemoryStream(Stream stream)
-        {
-            MemoryStream ms = new MemoryStream();
-            stream.CopyTo(ms);
-            return ms;
-        }
         public WaveParser(MemoryStream ms, bool automaticRepair = true)
         {
             ms.Seek(0, SeekOrigin.Begin);
@@ -100,12 +93,41 @@ namespace TestConsole.AudioProcess.Wave
             }
         }
 
-        public SegmentModel UpdateSegment(SegmentModel segment)
+        public byte[] AppendSilence(double seconde, WaveAppend waveAppend)
         {
-            segment.audioDuration = totalTime;
-            segment.audioBytes = audioBytes;
+            if (waveFormat == null)
+                throw new FormatException("No Wave format found");
 
-            return segment;
+            long silenceLength = (long)(seconde * waveFormat.AverageBytesPerSecond);
+
+            byte[] header = audioBytes.BigTake(dataChunkPosition).ToArray();
+            byte[] data = audioBytes.BigSkip(dataChunkPosition).BigTake(dataChunkLength).ToArray();
+            byte[] silence = new byte[(seconde < 0) ? 0 : silenceLength];
+
+            if (silenceLength < 0) // If silence lengh is negative renmove audio data
+            {
+                silenceLength = Math.Abs(silenceLength);
+
+                data = (waveAppend == WaveAppend.AtTheBeginning) ?
+                    data.BigSkip(silenceLength).ToArray() : // To remove begginning skip byte
+                    data.BigTake(data.Length - silenceLength).ToArray(); // To remove at the end take first byte
+            }
+
+            MemoryStream ms = new MemoryStream();
+
+            if (waveAppend == WaveAppend.AtTheBeginning)
+            {
+                ms = CombineBytes(header, silence, data);
+            }
+            else
+            {
+                ms = CombineBytes(header, data, silence);
+            }
+            audioBytes = RepairPipeWave(ms);
+
+            ms.Dispose();
+
+            return audioBytes;
         }
 
         private byte[] RepairPipeWave(MemoryStream ms)
@@ -127,9 +149,27 @@ namespace TestConsole.AudioProcess.Wave
                 bw.Write((int)correctDataChunkLength);
                 dataChunkLength = correctDataChunkLength;
 
-                var test = new WaveParser(ms);
                 return ms.ToArray();
             }
+        }
+
+        private static MemoryStream streamToMemoryStream(Stream stream)
+        {
+            MemoryStream ms = new MemoryStream();
+            stream.CopyTo(ms);
+            return ms;
+        }
+
+        private static MemoryStream CombineBytes(params byte[][] arrays)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            foreach (var array in arrays)
+            {
+                ms.Write(array, 0, array.Length);
+            }
+            return ms;
+
         }
     }
 }

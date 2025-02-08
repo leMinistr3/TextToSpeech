@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace TestConsole.AudioProcess.Wave
+namespace WaveSplitter.Wave
 {
     public class WaveFormat
     {

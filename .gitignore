@@ -8,3 +8,13 @@ TextToSpeech/obj/Debug/net8.0/
 TextToSpeech/bin/Debug/net8.0/
 
 .vs/TextToSpeech/v17/
+
+TextToSpeech/obj/
+
+.vs/TextToSpeech/DesignTimeBuild/
+
+WaveSplitter/bin/Debug/net8.0/
+
+WaveSplitter/obj/Debug/net8.0/
+
+WaveSplitter/obj/
